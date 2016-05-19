@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.eydo.leonardo.activity.VideoViewer">
+
+    <item
+        android:id="@+id/mapView"
+        android:icon="@drawable/viewmap"
+        android:title="@string/Percorso"
+        app:showAsAction="ifRoom"/>
+
+
+
+</menu>

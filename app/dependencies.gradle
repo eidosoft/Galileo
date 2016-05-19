@@ -1,0 +1,4 @@
+dependencies {
+    compile(name:'estimote-sdk', ext:'aar')
+    compile 'com.android.support:appcompat-v7:22.2.+'
+}

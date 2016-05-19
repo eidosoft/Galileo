@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>Mappa piano1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript">
+
+    function cambia_immagine( id )
+    {
+        $( '#p1' ).attr( 'src', 'file:///android_asset/p1_files/' + id + '.png');
+    }
+
+    function nascondi_immagine()
+    {
+        $( '#p1' ).attr( 'src', 'file:///android_asset/p1_files/p1.png');
+    }
+
+    function provaJavascript()
+    {
+        window.alert('javascript');
+    }
+
+    function precarica( immagini )
+    {
+        $( immagini ).each( function (){ $( '<img/>' )[ 0 ].src = this; });
+    }
+
+	precarica
+	([
+        'p1_files/p1i1.png',
+        'p1_files/p1i2.png',
+        'p1_files/p1i3.png',
+    ]);
+
+    function onClick(minor) {
+        Android.onClick(minor);
+    }
+
+</script>
+</head>
+<body bgcolor="#F2F2F2" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<img id="p1" src="file:///android_asset/p1_files/p1.png" width="772" height="1280" border="0" alt="" usemap="#p1_Map" cli>
+<map name="p1_Map">
+    <area shape="poly" alt="" coords="713,858, 713,902, 713,907, 717,908, 729,913, 729,949, 718,953, 713,955, 713,959, 713,974, 637,974, 561,974, 561,858, 637,858, 713,858, 713,858"
+          href="javascript:onClick('p1i3')" onfocus="this.blur()">
+    <area shape="poly" alt="" coords="469,538, 469,613, 469,687, 463,687, 427,687, 335,687, 298,687, 297,687, 297,656, 296,649, 290,647, 275,642, 275,604, 290,599, 296,596, 296,590, 296,538, 296,538, 338,538, 469,538, 469,538"
+          href="javascript:onClick('p1i2')" onfocus="this.blur()">
+    <area shape="poly" alt="" coords="502,49, 505,63, 507,69, 507,166, 507,262, 463,262, 452,262, 442,262, 442,268, 317,268, 317,258, 317,220, 317,122, 317,112, 308,112, 247,112, 247,104, 239,104, 239,101, 235,101, 235,85, 239,85, 239,81, 247,82, 247,72, 247,70, 305,70, 312,70, 314,63, 318,49, 351,49, 355,63, 357,70, 364,70,
+436,70, 436,74, 446,74, 464,74, 473,74, 473,64, 473,62, 477,49, 502,49, 502,49"
+          href="javascript:onClick('p1i1')" onfocus="this.blur()">
+</map>
+</body>
+</html>
