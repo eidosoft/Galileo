@@ -3,21 +3,15 @@
     <Museum>
         <Floor Name="Primo Piano" Map="p1.html" Route="stanza" Major="1">
            <Place Image="p1i1">
-               <Beacon BeaconId="YLBH"  Minor="1"/>
+               <Beacon BeaconId="YLBH"  Minor="13"/>
                <Content Type="Html"  ContentURL="p1.html" DescrContent="contentHtml"/>
            </Place>
         </Floor>
 
-    <Floor Name="Primo Piano" Map="p1.html" Route="stanza" Major="10504">
+    <Floor Name="Primo Piano" Map="p1.html" Route="stanza" Major="2">
         <Place Image="p1i2">
-            <Beacon BeaconId="YLBH"  Minor="46318"/>
+            <Beacon BeaconId="YLBH"  Minor="14"/>
             <Content Type="Html"  ContentURL="p2.html" DescrContent="contentHtml"/>
-        </Place>
-    </Floor>
-    <Floor Name="Secondo Piano" Map="p1.html" Route="stanza" Major="24859">
-        <Place Image="p1i3">
-            <Beacon BeaconId="YLBH"  Minor="3618"/>
-            <Content Type="Html"  ContentURL="p3.html" DescrContent="contentHtml"/>
         </Place>
     </Floor>
 </Museum>

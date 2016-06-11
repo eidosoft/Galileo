@@ -9,10 +9,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.eido.galileo.activity.contentactivity.ImageViewer;
+import com.eido.galileo.activity.contentactivity.VideoViewer;
 import com.eido.galileo.exceptions.FloorNotFoundException;
 import com.eido.galileo.exceptions.PlaceNotFoundException;
 import com.eido.galileo.handlers.MapBeaconMessageHandler;
@@ -39,11 +42,14 @@ import java.util.Locale;
 public class MapViewActivity extends AppCompatActivity {
 
 
+    private Floor LastFloorDetected;
+    private Place LastPlaceDetected;
+    private Floor DefaultFloor;
     private BeaconManager beaconManager;
     private XMLResourceManager resourceManager;
     public WebView htmlWebView;
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", null, null, null);
-    private Floor lastFloor;
+
 
 
     @Override
@@ -58,18 +64,22 @@ public class MapViewActivity extends AppCompatActivity {
             this.resourceManager = new XMLResourceManager(getResources().openRawResource(R.raw.beaconresources));
 
         //Imposto la WebView che andrà a contenere la mappa
+            DefaultFloor =  resourceManager.GetFloorByMayor(1);
             htmlWebView = (WebView)findViewById(R.id.webView);
             htmlWebView.setWebChromeClient(new WebChromeClient());
+            htmlWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
             WebSettings webSetting = htmlWebView.getSettings();
             webSetting.setBuiltInZoomControls(true);
             webSetting.setDisplayZoomControls(false);
             webSetting.setJavaScriptEnabled(true);
 
+
             beaconManager = new BeaconManager(this);
 
-            showFloor(resourceManager.GetFloorByMayor(1));
 
-        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+            showFloor(DefaultFloor);
+
+            beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 // Note that results are not delivered on UI thread.
@@ -77,56 +87,55 @@ public class MapViewActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
+                        if (beacons == null) {
 
-                        // Note that beacons reported here are already sorted by estimated
-                        // distance between device and beacon.
-                        if (beacons == null || beacons.size() == 0)
-                            return;
+                            if(LastFloorDetected == null)
+                                showFloor(DefaultFloor);
+                            else
+                                showFloor((LastFloorDetected));
+                        }
+
+                        if(beacons.size() == 0) {
+
+                            if(LastFloorDetected == null)
+                                showFloor(DefaultFloor);
+                            else
+                                showFloor((LastFloorDetected));
+                        }
 
                         Beacon beaconDetect = beacons.get(0);
-                        double distance = Utils.computeAccuracy(beaconDetect);
+
                         if (beaconDetect == null)
                             return;
 
+                        Floor floor = resourceManager.GetFloorByMayor(beaconDetect.getMajor());
 
-                            Floor floor = null;
-                            try {
-                                floor = resourceManager.GetFloorByMayor(beaconDetect.getMajor());
-                            } catch (FloorNotFoundException e1) {
-                                e1.printStackTrace();
-                                return;
-                            }
-                            if (lastFloor == null || lastFloor != floor) {
-                                lastFloor = floor;
+                        if (floor == null)
+                            return;
 
-                                try {
-                                    showFloor(floor);
-                                } catch (FloorNotFoundException e) {
-                                    e.printStackTrace();
-                                    return;
-                                }
+                        if(floor != LastFloorDetected) {
 
-                            }
-
-                            Place place = null;
-                            try {
-                                place = resourceManager.GetPlaceByFloorAndMinor(floor, beaconDetect.getMinor());
-                            } catch (PlaceNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                            showImage(place, Utils.computeAccuracy(beaconDetect));
+                            LastFloorDetected = floor;
+                            showFloor(floor);
                         }
 
 
+                        Place place = resourceManager.GetPlaceByFloorAndMinor(floor, beaconDetect.getMinor());
+
+                        LastPlaceDetected = place;
+                        double distance = Utils.computeAccuracy(beaconDetect);
+                        if (distance < Constants.BOUND_DISTANCE)
+                            showImage(place, distance);
+                        else
+                            showFloor(LastFloorDetected);
+
+                    }
+
                 });
-
-
             }
         });
 
         } catch (Exception e) {
-            e.printStackTrace();
-        } catch (FloorNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -222,8 +231,7 @@ public class MapViewActivity extends AppCompatActivity {
 
     private void showImage(Place place, double distance)
     {
-        //Se è al di sotto di una certa soglia
-        if (distance < Constants.BOUND_DISTANCE)
+
             //Sostituisco l'immagine
             htmlWebView.loadUrl("javascript:cambia_immagine('" + place.getImage() + "')");
 
@@ -234,7 +242,7 @@ public class MapViewActivity extends AppCompatActivity {
         htmlWebView.loadUrl("javascript:nascondi_immagine()");
     }
 
-    private Floor showFloor(Floor floor) throws FloorNotFoundException {
+    private Floor showFloor(Floor floor){
 
         //Imposto una nuova mappa di un piano solamente se
         //non è ancora stata impostata oppure se è stato
@@ -244,5 +252,42 @@ public class MapViewActivity extends AppCompatActivity {
 
 
         return floor;
+    }
+
+
+    public class WebAppInterface
+    {
+        Context mContext;
+
+        public WebAppInterface(Context context)
+        {
+            mContext = context;
+        }
+
+        @JavascriptInterface
+        public void onClick(String minor)
+        {
+
+            switch(minor)
+            {
+                case "p1i2" :
+                {
+                    Intent intent = new Intent(MapViewActivity.this, ImageViewer.class);
+                    intent.putExtra("resource", "splashpng");
+                    startActivity(intent);
+                    break;
+                }
+
+                case "p1i1" :
+                {
+                    Intent intent = new Intent(MapViewActivity.this, VideoViewer.class);
+                    intent.putExtra("resource", "explvideo");
+                    startActivity(intent);
+                    break;
+                }
+
+            }
+        }
+
     }
 }

@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.MediaController;
 import android.widget.VideoView;
-
 import com.eido.galileo.R;
-
 
 public class VideoViewer extends ViewerActivity {
 

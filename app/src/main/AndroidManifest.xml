@@ -38,6 +38,9 @@
             android:name=".activity.contentactivity.ImageViewer"
             android:label="@string/app_name" />
         <activity
+            android:name=".activity.contentactivity.VideoViewer"
+            android:label="@string/app_name" />
+        <activity
             android:name=".activity.contentactivity.ViewerActivity"
             android:label="@string/app_name" />
         <activity

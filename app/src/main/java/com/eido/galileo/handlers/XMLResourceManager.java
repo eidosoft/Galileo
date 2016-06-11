@@ -31,17 +31,15 @@ public class XMLResourceManager {
      *
      * @param major intero che rappresenta il Major del Beacon
      * @return Piano in cui è posizionato il beacon
-     * @throws FloorNotFoundException Eccezione che viene lanciata quando non viene trovato
-     *         il piano
      */
-    public Floor GetFloorByMayor(int major) throws FloorNotFoundException {
+    public Floor GetFloorByMayor(int major){
 
         for (Floor floor: Museum.getFloors()) {
             if(floor.getMajor() == major)
                 return floor;
         }
 
-        throw new FloorNotFoundException(major);
+        return null;
     }
 
     /**
@@ -52,13 +50,13 @@ public class XMLResourceManager {
      * @throws PlaceNotFoundException Eccezione che viene lanciata quando non viene trovato
      *         il beacon all' intenro della stanza
      */
-    public Place GetPlaceByFloorAndMinor(Floor floor, int minor) throws PlaceNotFoundException {
+    public Place GetPlaceByFloorAndMinor(Floor floor, int minor){
 
         for (Place place : floor.getPlaces()) {
             if(place.getBeacon().getMinor() == minor)
                 return place;
         }
 
-        throw new PlaceNotFoundException(floor, minor);
+        return null;
     }
 }
